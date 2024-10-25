@@ -7,6 +7,10 @@ app:
 	// Configurar GPIO 17 como input:
 	mov X21,#0
 	str w21,[x20,GPIO_GPFSEL1] 		// Coloco 0 en Function Select 1 (base + 4)   	
+
+    // Configurar GPIO 2 y 3 como output:
+	mov X26,#0x240
+	str w26,[x20, 0] 
 	
 	//---------------- Pintar fondo --------------------
 	// X0 contiene la dirección base del framebuffer (NO MODIFICAR)
@@ -18,6 +22,12 @@ loop2:
 	mov x2,512         	// Tamaño en Y
 loop1:
 	mov x1,512         	// Tamaño en X
+
+//-------------- Prendido y apagado inicial de leds ---------
+    mov w26, 0x4
+	bl outputOff
+	mov w26, 0x8
+	bl outputOn
 
 //---------------- Cuadrados/Paredes --------------------
 loop0:
@@ -86,6 +96,30 @@ loop0:
 	mov x18, 20// alto
 	mov w22, w6  // pared
 	BL rectangulo
+
+// Primera pared
+	mov x15, 381// esquina en x rect
+	mov x16, 203 // esquina en y rect
+	mov x17, 110 // ancho
+	mov x18, 30// alto
+	mov w22, 0x84e9
+	BL rectangulo
+
+// Segunda pared
+	mov x15, 77// esquina en x rect
+	mov x16, 374 // esquina en y rect
+	mov x17, 110// ancho
+	mov x18, 30// alto
+	mov w22, 0x84e9
+	BL rectangulo
+
+// Tercera pared
+	mov x15, 20// esquina en x rect
+	mov x16, 269 // esquina en y rect
+	mov x17, 110// ancho
+	mov x18, 30// alto
+	mov w22, 0x84e9
+	BL rectangulo
 //---------------- Fin paredes ---------------------------
 
 //---------------- Borrado de paredes --------------------
@@ -151,44 +185,15 @@ loop0:
 	BL rectangulo
 //---------------- Fin borrado ---------------------------
 
-//---------------- Florecitas/Frutitas ---------------------------
+//------------------ Florecitas ---------------------------
+mov x28, 8     // var que guarda la cant de flores que quedan por comer
 // pasillo de afuera
-	mov x5, 40 		// centro en y
-	mov x12, 40		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xcdde
-	BL circuloPista
-
-	mov x5, 40 		// centro en y
-	mov x12, 150		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
-	BL circuloPista
-
 	mov x5, 150 		// centro en y
 	mov x12, 40		//centro en x 
 	mov x26, 60		//radio del circulo al 2
 	mov w22,0xcdde
 	BL circuloPista
 
-	mov x5, 250 		// centro en y
-	mov x12, 40		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
-	BL circuloPista
-
-	mov x5, 40 		// centro en y
-	mov x12, 250		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xcdde
-	BL circuloPista
-
-	mov x5, 350 		// centro en y
-	mov x12, 40		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
-	BL circuloPista
-
 	mov x5, 350 		// centro en y
 	mov x12, 40		//centro en x 
 	mov x26, 60		//radio del circulo al 2
@@ -196,57 +201,9 @@ loop0:
 	BL circuloPista
 
 	mov x5, 460 		// centro en y
-	mov x12, 40		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 40 		// centro en y
 	mov x12, 350		//centro en x 
 	mov x26, 60		//radio del circulo al 2
 	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 460 		// centro en y
-	mov x12, 150		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 460 		// centro en y
-	mov x12, 250		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 460 		// centro en y
-	mov x12, 350		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 40 		// centro en y
-	mov x12, 460		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
-	BL circuloPista
-
-	mov x5, 150 		// centro en y
-	mov x12, 460		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
-	BL circuloPista
-	
-	mov x5, 250 		// centro en y
-	mov x12, 460		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
-	BL circuloPista
-
-	mov x5, 350 		// centro en y
-	mov x12, 460		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
 	BL circuloPista
 
 // pasillo 2
@@ -256,66 +213,17 @@ loop0:
 	mov w22, 0xf4b6
 	BL circuloPista
 
-	mov x5, 100 		// centro en y
-	mov x12, 400		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 400 		// centro en y
-	mov x12, 400		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
-	BL circuloPista
-
-	mov x5, 400 		// centro en y
-	mov x12, 100		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xcdde
-	BL circuloPista
-
-	mov x5, 100 		// centro en y
-	mov x12, 250		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 250 		// centro en y
-	mov x12, 400		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
 	mov x5, 400 		// centro en y
 	mov x12, 250		//centro en x 
 	mov x26, 60		//radio del circulo al 2
 	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 250 		// centro en y
-	mov x12, 100		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
 	BL circuloPista
 
 //pasillo 3
-
-	mov x5, 160 		// centro en y
-	mov x12, 340		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
-	BL circuloPista
-
 	mov x5, 160 		// centro en y
 	mov x12, 160		//centro en x 
 	mov x26, 60		//radio del circulo al 2
 	mov w22, 0xcdde
-	BL circuloPista
-
-	mov x5, 340 		// centro en y
-	mov x12, 160		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, #0xF800 // rojo
 	BL circuloPista
 
 	mov x5, 340 		// centro en y
@@ -325,32 +233,15 @@ loop0:
 	BL circuloPista
 
 //pasillo 4
-	mov x5, 220 		// centro en y
-	mov x12, 250		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
-	mov x5, 250 		// centro en y
-	mov x12, 220		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
-
 	mov x5, 250 		// centro en y
 	mov x12, 280		//centro en x 
 	mov x26, 60		//radio del circulo al 2
 	mov w22, 0xf4b6
 	BL circuloPista
 
-	mov x5, 280 		// centro en y
-	mov x12, 250		//centro en x 
-	mov x26, 60		//radio del circulo al 2
-	mov w22, 0xf4b6
-	BL circuloPista
 //---------------- Fin florecitas/Frutitas ---------------------------
 
-
+//---------------- Pintado del laberinto -----------------------------
 	sturh w3,[x10]	   	// Setear el color del pixel N
 	add x10,x10,2	   	// Siguiente pixel
 	sub x1,x1,1	   		// Decrementar el contador X
@@ -358,15 +249,62 @@ loop0:
 	cbnz x1,loop0	   	// Si no terminó la fila, saltar
 	sub x2,x2,1	   		// Decrementar el contador Y	
 	cbnz x2,loop1	  	// Si no es la última fila, saltar
+//---------------- Fin pintado -------------------------------------
 
-// --para que no crashee dice la coti--
-delay1: 
-	sub x11,x11,#1
-	cbnz x11, delay1
-	bl inputRead		// Leo el GPIO17 y lo guardo en x21
-	add x10, x0, 0		// X10 contiene la dirección base del framebuffer
-	mov w3, 0x07E0    	// 0x07E0 = VERDE
 
+//---------------- Pintado del personaje ---------------------------
+posicion_inicial_personaje: //setea posicion inicial del personaje
+	mov x7, 500
+	mov x12, 250
+
+check_flores: //verifica si quedan flores por comer, si quedan->no hace nada, si no quedan->prende led verde
+	cbnz x28, posicion_nueva_personaje   
+	mov w26, 0x4
+	bl outputOn    
+	mov w26, 0x8
+	bl outputOff   
+
+posicion_nueva_personaje:
+	mov x1, x7    //posicion x
+	mov x2, x12   //posicion y
+
+ladybug: //dibujo el personaje
+    // Parámetros de entrada:
+    // x1: centro X del círculo
+    // x2: centro Y del círculo
+    // x3: radio del círculo
+	mov x3, 70
+
+    // Caparazón rojo
+    mov x3, 35           // Radio del cuerpo rojo
+    mov x5, x1           // Centro en Y del caparazón
+    mov x6, x2           // Centro en X del caparazón
+    mov x26, x3          // Radio del círculo
+    mov w22, #0xF800     // Color rojo (RGB 16-bit)
+    bl circuloMariquita
+
+    // Puntos negros en la parte superior del caparazón
+    mov x3, 7            // Radio de los puntos negros
+    mov x26, x3
+    mov w22, #0x0000     // Color negro (RGB 16-bit)
+
+    // Primer punto negro
+    sub x5, x1, 15       // Desplaza hacia arriba del centro
+    sub x6, x2, 10       // Desplaza un poco a la izquierda
+    bl circuloMariquita
+
+    // Segundo punto negro
+    add x5, x5, 10       // Desplaza un poco hacia abajo
+    add x6, x6, 20       // Desplaza a la derecha
+    bl circuloMariquita
+
+    // Tercer punto negro
+    add x5, x5, 20       // Desplaza más hacia abajo
+    sub x6, x6, 15       // Desplaza un poco a la izquierda
+    bl circuloMariquita
+//------------------------- Fin pintado personaje --------------------
+
+//------------------------- Figuras geometricas -----------------------
 rectangulo:
 	sub x19, x15, x17 
 	sub x23, x16, x18 
@@ -383,11 +321,11 @@ volverRect:
 	BR x30
 
 circuloPista:
-	sub x7,x1,x12 //x-x_0
+	sub x11,x1,x12 //x-x_0
 	sub x8,x2,x5//(y-y_0)
-	mul x7,x7,x7//(x-x_0)^2
+	mul x11,x11,x11//(x-x_0)^2
 	mul x8,x8,x8//(y-y_0)^2
-	add x9,x7,x8//(x-x_0)^2 + (y-y_0)^2
+	add x9,x11,x8//(x-x_0)^2 + (y-y_0)^2
 		//scvtf d1, x9
 		//fsqrt d2,d1
 		//fcvtzs x5, d2
@@ -397,8 +335,26 @@ circuloPista:
 volverCircPista:
 	BR x30
 	
-	// --- Infinite Loop ---	
-InfLoop: 
+circuloMariquita:
+    // Entradas: x1: Y del centro del círculo, x2: X del centro del círculo, x26: Radio al cuadrado del círculo, w22: Color del círculo
+    sub x11, x2, x6        // Calcula (x - x_0)
+    sub x8, x1, x5         // Calcula (y - y_0)
+    mul x11, x11, x11      // (x - x_0)^2
+    mul x8, x8, x8         // (y - y_0)^2
+    add x9, x11, x8        // (x - x_0)^2 + (y - y_0)^2
+    subs xzr, x26, x9      // Comparar con radio^2
+    b.LT volverCircMariquita  // Si está fuera del círculo, no dibujar
+    
+    // Calcula la posición en el framebuffer con origen invertido
+    mov x4, #512           // Mover 512 a un registro
+    mul x7, x2, x4         // X relativo en framebuffer (multiplica por 512)
+    sub x7, x7, x1         // Ajusta la posición Y en framebuffer invertido
+    add x7, x7, x7         // Multiplicar x7 por 2 (equivalente a lsl #1)
+    add x10, x10, x7       // Sumar base del framebuffer al resultado en x10
+
+    sturh w22, [x10]       // Escribir el color en el framebuffer usando x10
+
+volverCircMariquita: BR x30InfLoop: 
 	b InfLoop
 //
 	
